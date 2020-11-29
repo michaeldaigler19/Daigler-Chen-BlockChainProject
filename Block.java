@@ -6,6 +6,7 @@ import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Random;
 
 public class Block {
     String PreviousBlockHash;
@@ -20,7 +21,8 @@ public class Block {
         this.PreviousBlockHash = previousBlockHash;
         this.Data = data;
         this.TimeStamp = timeStamp;
-        this.nonce = Double.parseDouble(Math.random();
+        Random r = new Random(9999);
+        this.nonce = r.nextInt();
     }
 
     public String calculateBlockHash() {
@@ -52,22 +54,19 @@ public class Block {
         return this.CurrentBlockHash;
     }
 
-    public ArrayList<Transaction> retrieveProvenance(String id) {
-        ArrayList<Transaction> previousTransactions = new ArrayList<Transaction>();
-        Artefact targetArtefect = this.Data.artefact;
-        return previousTransactions;
-    }
 
 
 
-    public void TreatySC(Transaction t) {
 
-    }
 
-  // Getters and Setters defined below
+
+
+    // Getters and Setters defined below
 
 
     public String getHash() {
+
+        return this.CurrentBlockHash;
 
     }
 }
