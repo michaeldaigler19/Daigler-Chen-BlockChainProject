@@ -1,3 +1,5 @@
+package src;
+
 public class StakeHolder {
     String Id;
     String Name;
@@ -13,4 +15,7 @@ public class StakeHolder {
 
     // Need Setter and Getters for each
 
+    public Double getBalance() {
+        return Balance;
+    }
 }

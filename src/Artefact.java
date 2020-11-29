@@ -1,10 +1,12 @@
+package src;
+
 public class Artefact {
     String Id;
     String Name;
-    String CountryOfOrigin;
+    StakeHolder CountryOfOrigin;
     StakeHolder stakeHolderOwner;
 
-    public Artefact(String id, String name, String countryOfOrigin, StakeHolder owner) {
+    public Artefact(String id, String name, StakeHolder countryOfOrigin, StakeHolder owner) {
         this.Id = id;
         this.Name = name;
         this.CountryOfOrigin = countryOfOrigin;

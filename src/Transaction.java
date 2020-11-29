@@ -1,12 +1,14 @@
+package src;
+
 public class Transaction {
     Artefact artefact;
-    Double TimeStamp;
+    Long TimeStamp;
     StakeHolder Seller;
     StakeHolder Buyer;
     StakeHolder AuctionHouse;
     Double Price;
 
-    public Transaction(Artefact artefact, Double timeStamp, StakeHolder seller, StakeHolder buyer, StakeHolder auctionHouse, Double price) {
+    public Transaction(Artefact artefact, Long timeStamp, StakeHolder seller, StakeHolder buyer, StakeHolder auctionHouse, Double price) {
         this.artefact = artefact;
         this.TimeStamp = timeStamp;
         this.Seller = seller;

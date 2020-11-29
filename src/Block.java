@@ -1,3 +1,5 @@
+package src;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,7 +22,7 @@ public class Block {
         this.PreviousBlockHash = previousBlockHash;
         this.Data = data;
         this.TimeStamp = timeStamp;
-        this.nonce = Double.parseDouble(Math.random();
+        this.nonce = (int)(Math.random() * 100);
     }
 
     public String calculateBlockHash() {
@@ -68,6 +70,7 @@ public class Block {
 
 
     public String getHash() {
-
+        return this.CurrentBlockHash;
     }
+
 }
