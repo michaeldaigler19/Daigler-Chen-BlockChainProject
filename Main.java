@@ -1,3 +1,4 @@
+
 import java.util.*;
 public class Main {
     public static void main(String args[]) {
@@ -35,58 +36,10 @@ public class Main {
 
     }
 
-    public static ArrayList<Transaction> retrieveProvenance(String id, ArrayList<Block> blockchain ) {
-        ArrayList<Transaction> previousTransactions = new ArrayList<Transaction>();
-        for (int i = 0; i < blockchain.size(); i++) {
-            if (id.equals( blockchain.get(i).Data.artefact.GetId())) {
-                previousTransactions.add(blockchain.get(i).Data);
-
-            }
-        }
-        return previousTransactions;
-    }
-
-    public static ArrayList<Transaction> retrieveProvenanceByYear(String id, ArrayList<Block> blockchain, long timestamp ) {
-        ArrayList<Transaction> previousTransactions = new ArrayList<Transaction>();
-        for (int i = 0; i < blockchain.size(); i++) {
-            if (id.equals( blockchain.get(i).Data.artefact.GetId())) {
-                if(blockchain.get(i).Data.GetTime()>=timestamp){
-                    previousTransactions.add(blockchain.get(i).Data);
-
-            }}
-        }
-        return previousTransactions;
-    }
-
-    public Boolean TreatySC(Transaction transaction, ArrayList<Block> blockchain) {
-        if (retrieveProvenanceByYear(transaction.GetArtefact().GetId(), blockchain, 2001).size()>=2){
-            return false;
-        }
-        else if (transaction.GetBuyer().GetBalance()<= transaction.GetPrice()){
-            return false;
-
-        }
-        else{
-            return true;
-        }
-    }
-    public void DistributeCash(Transaction transaction, ArrayList<Block> blockchain){
-        if (TreatySC(transaction, blockchain)==true){
-            //distribute profits
-            transaction.GetAuctionhouse().SetBalance(transaction.GetAuctionhouse().GetBalance()+transaction.GetPrice()*0.1);
-            transaction.GetSeller().SetBalance(transaction.GetSeller().GetBalance()+transaction.GetPrice()*0.7);
-            transaction.GetBuyer().SetBalance(transaction.GetBuyer().GetBalance()-transaction.GetPrice());
-            transaction.GetArtefact().GetCountry().SetBalance(transaction.GetArtefact().GetCountry().GetBalance()+transaction.GetPrice()*0.2);
-
-            // reassigning owner
-            transaction.GetArtefact().SetOwner(transaction.GetBuyer());
-        }
-    }
-
     public static boolean verify_Blockchain(ArrayList<Block> BC){
         int indexOfLastBlock = BC.size() - 1;
         BC.get(indexOfLastBlock).retrieveProvenance(BC.get(BC.size() - 1).Data.artefact.Id);
-        return true;
+      return true;
     }
 
 }
