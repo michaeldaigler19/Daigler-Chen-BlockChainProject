@@ -13,5 +13,42 @@ public class Artefact {
         this.stakeHolderOwner = owner;
     }
 
+    public String getId (){
+        return this.Id;
+    }
+
+    public String getName() {
+        return this.Name;
+    }
+
+    public StakeHolder getCountry (){
+        return this.CountryOfOrigin;
+    }
+
+    public StakeHolder getOwner() {
+        return this.stakeHolderOwner;
+    }
+
+    public void setId (String id) {
+        this.Id = id;
+    }
+
+    public void setName (String name) {
+        this.Name = name;
+    }
+
+    public void setCountry (StakeHolder country) {
+        this.CountryOfOrigin = country;
+    }
+
+    public void setOwner (StakeHolder owner) {
+        this.stakeHolderOwner = owner;
+    }
+
+    public String toString (){
+        return Id+ ","+Name+ ","+CountryOfOrigin +","+stakeHolderOwner.toString();
+    }
+
+
     //Need setters and getters for each
 }

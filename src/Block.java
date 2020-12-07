@@ -1,13 +1,9 @@
 package src;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchProviderException;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Date;
 
 public class Block {
     String PreviousBlockHash;
@@ -17,12 +13,18 @@ public class Block {
     Integer nonce;
 
 
-    public Block( Transaction data,String previousBlockHash ,Long timeStamp) {
-        this.CurrentBlockHash = calculateBlockHash();
-        this.PreviousBlockHash = previousBlockHash;
+    public Block(Transaction data, String previousBlockHash , Long timeStamp) {
         this.Data = data;
         this.TimeStamp = timeStamp;
         this.nonce = (int)(Math.random() * 100);
+        if ( previousBlockHash.equals(Main.PREVIOUS_HASH_FOR_GENISIS_BLOCK) ){
+            this.PreviousBlockHash = null;
+            this.CurrentBlockHash = calculateBlockHash();
+        } else {
+            this.PreviousBlockHash = previousBlockHash;
+            this.CurrentBlockHash = calculateBlockHash();
+        }
+
     }
 
     public String calculateBlockHash() {
@@ -51,6 +53,7 @@ public class Block {
             nonce++;
             this.CurrentBlockHash = calculateBlockHash();
         }
+        System.out.println(this.CurrentBlockHash);
         return this.CurrentBlockHash;
     }
 

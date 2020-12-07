@@ -2,13 +2,13 @@ package src;
 
 import java.util.Date;
 
-// Artefact artefact;
+// src.Artefact artefact;
 //    Double TimeStamp;
-//    StakeHolder Seller;
-//    StakeHolder Buyer;
-//    StakeHolder AuctionHouse;
+//    src.StakeHolder Seller;
+//    src.StakeHolder Buyer;
+//    src.StakeHolder AuctionHouse;
 //    Double Price;
-//    public Transaction(Artefact artefact, Double timeStamp, StakeHolder seller, StakeHolder buyer, StakeHolder auctionHouse, Double price) {
+//    public src.Transaction(src.Artefact artefact, Double timeStamp, src.StakeHolder seller, src.StakeHolder buyer, src.StakeHolder auctionHouse, Double price) {
 public class TestData {
     StakeHolder countryOfOrigin1 = new StakeHolder("c1","Uganda", "1234Street", 10.00);
     StakeHolder owner1 = new StakeHolder("o1", "Bob", "123Road", 5.00);
