@@ -1,4 +1,8 @@
 
+import src.Artefact;
+import src.StakeHolder;
+import src.Transaction;
+
 import java.util.Date;
 
 // Artefact artefact;

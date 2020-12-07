@@ -26,10 +26,17 @@ public class Main {
 
         //data1-data3 should be filled by the user
 
+        Transaction transaction1 = new Transaction();
+        Transaction transaction2 = new Transaction();
+        Transaction transaction3 = new Transaction();
+        askForTransaction(transaction1);
+        askForTransaction(transaction2);
+        askForTransaction(transaction3);
+        Block genesisBlock = new Block(transaction1,  "0", new Date().getTime());
         TestData data1 = new TestData();
         TestData data2 = new TestData();
         TestData data3 = new TestData();
-        Block genesisBlock = new Block(data1.transaction1,   PREVIOUS_HASH_FOR_GENISIS_BLOCK, new Date().getTime());
+        Block genesisBlock = new Block(data1.transaction1, PREVIOUS_HASH_FOR_GENISIS_BLOCK, new Date().getTime());
 
         genesisBlock.mineBlock(prefix);
         if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
@@ -129,5 +136,57 @@ public class Main {
         return BC.get(indexOfLastBlock).getHash() != null;
     }
 
+
+
+    public static void askForStakeholder(StakeHolder stakeholder){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please provide the ID of the stakeholder");
+        String id = scanner.nextLine();
+        System.out.println("Please provide the name of the stakeholder");
+        String name = scanner.nextLine();
+        System.out.println("Please provide the address of the stakeholder");
+        String address = scanner.nextLine();
+        System.out.println("Please provide the balance of the stakeholder");
+        Double balance = scanner.nextDouble();
+        stakeholder = new StakeHolder(id, name, address, balance);
+
+
+
+    }
+
+    public static void askForArtefact(Artefact artefact){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please provide the ID of the artefact");
+        String id = scanner.nextLine();
+        System.out.println("Please provide the name of the artefact");
+        String name = scanner.nextLine();
+        System.out.println("Please provide the information of the country of origin of this artefact");
+        StakeHolder countryOfOrigin=new StakeHolder();
+        askForStakeholder(countryOfOrigin);
+        System.out.println("Please provide the information of the owner of this artefact");
+        StakeHolder owner= new StakeHolder();
+        askForStakeholder(owner);
+        artefact = new Artefact(id, name, countryOfOrigin, owner );
+
+    }
+
+    public static void askForTransaction(Transaction transaction){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please provide the information of the artefact in this transaction");
+        Artefact artefact = new Artefact();
+        askForArtefact(artefact);
+        System.out.println("Please provide the information of the buyer in this transaction");
+        StakeHolder buyer= new StakeHolder();
+        askForStakeholder(buyer);
+        System.out.println("Please provide the information of the seller in this transaction");
+        StakeHolder seller= new StakeHolder();
+        askForStakeholder(seller);
+        System.out.println("Please provide the information of the auctionhouse in this transaction");
+        StakeHolder auctionhouse= new StakeHolder();
+        askForStakeholder(auctionhouse);
+        System.out.println("Please provide the price of the transaction");
+        double price= scanner.nextDouble();
+        transaction = new Transaction(artefact, new Date().getTime(),buyer,seller,auctionhouse,price);
+    }
 
 }
