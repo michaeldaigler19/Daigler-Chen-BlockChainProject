@@ -1,9 +1,9 @@
 package src;
-import javax.swing.*;
-import java.awt.*;
 
-
-import java.awt.image.BufferStrategy;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.time.Year;
 import java.util.*;
 
 // Notes about conceptual overview:
@@ -14,53 +14,88 @@ import java.util.*;
  * User enters transactions -> select a buyer /  seller + artefact -> then pull rest of data from the data set
  * user wants to make a transaction -> go through all steps: make new Block, mine c=block and verify, add to blockchain if verified
  */
-
 public class Main {
     final static public String PREVIOUS_HASH_FOR_GENISIS_BLOCK = "0000";
+    public static ArrayList<Block> blockchain = new ArrayList<>();
+    private static Calendar myCalendar = new GregorianCalendar(2000,2,11);
+    final static Date dateBefore2001 = myCalendar.getTime();
+    static int prefix = 4;
     public static void main(String args[]) {
 //        g.start();
+        Scanner scanner = new Scanner(System.in);
 
-        ArrayList<Block> blockchain = new ArrayList<>();
-        int prefix = 4;   //we want our hash to start with four zeroes
+
+//        ArrayList<Block> blockchain = new ArrayList<>();
+           //we want our hash to start with four zeroes
         String prefixString = new String(new char[prefix]).replace('\0', '0');
 
         //data1-data3 should be filled by the user
 
-        Transaction transaction1 = new Transaction();
-        Transaction transaction2 = new Transaction();
-        Transaction transaction3 = new Transaction();
-        askForTransaction(transaction1);
-        askForTransaction(transaction2);
-        askForTransaction(transaction3);
-        Block genesisBlock = new Block(transaction1,  "0", new Date().getTime());
         TestData data1 = new TestData();
         TestData data2 = new TestData();
         TestData data3 = new TestData();
-        Block genesisBlock = new Block(data1.transaction1, PREVIOUS_HASH_FOR_GENISIS_BLOCK, new Date().getTime());
+        createBlock(data1.transaction3, prefix, blockchain);
+        createBlock(data2.transaction3, prefix, blockchain);
+        createBlock(data3.transaction3, prefix, blockchain);
 
-        genesisBlock.mineBlock(prefix);
-        if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
-            blockchain.add(genesisBlock);
-        else
-            System.out.println("Malicious block, not added to the chain");
-
-        Block secondBlock = new Block(data2.transaction2, blockchain.get(blockchain.size() - 1).getHash(),new Date().getTime());
-        secondBlock.mineBlock(prefix);
-        if (secondBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
-            blockchain.add(secondBlock);
-        else
-            System.out.println("Malicious block, not added to the chain");
-
-        Block thirdBlock = new Block(data3.transaction3,blockchain.get(blockchain.size() - 1).getHash(),
-                new Date().getTime());
-        thirdBlock.mineBlock(prefix);
-        if (thirdBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
-            blockchain.add(thirdBlock);
-        else
-            System.out.println("Malicious block, not added to the chain");
-
+//        Transaction transaction = new Transaction();
+//        boolean end = false;
+//        while (!end) {
+//
+//            createBlock(askForTransaction(), prefix, blockchain);
+//            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
+//            String response = scanner.nextLine();
+//            if (response.equals("no")) {
+//                end = true;
+//            } else {
+//                end = false;
+//            }
+//        }
+//        System.out.println(blockchain.get(0).Data.toString());
+            writeTransactionToFile();
         BlockChainGUI g = new BlockChainGUI();
-        g.createAndShowGUI();
+
+    }
+
+    public static void writeTransactionToFile() {
+        FileOutputStream output = null;
+        PrintWriter fileWriter;
+        try {
+            output = new FileOutputStream("Transaction data.txt", true);
+        } catch (FileNotFoundException e) {
+            System.out.println("File could not be opened for output- closing program");
+            System.exit(1);
+        } // ends catch
+
+        fileWriter = new PrintWriter(output, true);
+
+
+        for (int i = 0; i < blockchain.size(); i++) {
+            fileWriter.println(blockchain.get(i).Data.toString());
+        }
+    }
+
+
+    public static void createBlock(Transaction transaction, int prefix ,ArrayList<Block> blockchain){
+        String prefixString = new String(new char[prefix]).replace('\0', '0');
+        if(blockchain.size() == 0) {
+            Block genesisBlock = new Block(transaction, "0000", dateBefore2001.getTime());
+
+            genesisBlock.mineBlock(prefix, blockchain);
+            if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain))
+                blockchain.add(genesisBlock);
+            else
+                System.out.println("Malicious block, not added to the chain");
+        }
+        else {
+            Block regularBlock = new Block(transaction, blockchain.get(blockchain.size() - 1).getHash(), dateBefore2001.getTime());
+            regularBlock.mineBlock(prefix, blockchain);
+            if (regularBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
+                blockchain.add(regularBlock);
+            else
+                System.out.println("Malicious block, not added to the chain XXX");
+
+        }
     }
 
     public static ArrayList<Transaction> retrieveProvenance(String id, ArrayList<Block> blockchain ) {
@@ -74,52 +109,24 @@ public class Main {
         return previousTransactions;
     }
 
-    public static ArrayList<Transaction> retrieveProvenanceByYear(String id, ArrayList<Block> blockchain, long timestamp ) {
-        ArrayList<Transaction> previousTransactions = new ArrayList<Transaction>();
-        for (int i = 0; i < blockchain.size(); i++) {
-            if (id.equals( blockchain.get(i).Data.artefact.getId())) {
-                if(blockchain.get(i).Data.getTime()>=timestamp){
-                    previousTransactions.add(blockchain.get(i).Data);
 
-            }}
-        }
-        return previousTransactions;
-    }
 
-    public Boolean TreatySC(Transaction transaction, ArrayList<Block> blockchain) {
-        if (retrieveProvenanceByYear(transaction.getArtefact().getId(), blockchain, 2001).size()>=2){
-            return false;
-        }
-        else if (transaction.getBuyer().getBalance()<= transaction.getPrice()){
-            return false;
 
-        }
-        else{
-            return true;
-        }
-    }
-    public void DistributeCash(Transaction transaction, ArrayList<Block> blockchain){
-        if (TreatySC(transaction, blockchain)){
-            //distribute profits
-            transaction.getAuctionhouse().setBalance(transaction.getAuctionhouse().getBalance()+transaction.getPrice()*0.1);
-            transaction.getSeller().setBalance(transaction.getSeller().getBalance()+transaction.getPrice()*0.7);
-            transaction.getBuyer().setBalance(transaction.getBuyer().getBalance()-transaction.getPrice());
-            transaction.getArtefact().getCountry().setBalance(transaction.getArtefact().getCountry().getBalance()+transaction.getPrice()*0.2);
-
-            // reassigning owner
-            transaction.getArtefact().setOwner(transaction.getBuyer());
-        }
-    }
-// TODO: Refactor else if into separate functions
-// check if
     public static boolean verify_Blockchain(ArrayList<Block> BC){
-        int indexOfLastBlock = BC.size() - 1;
-        for (int i = indexOfLastBlock; i > 0; i--) {
+
+        int indexOfMostRecentBlock = BC.size() - 1;
+//        if (BC.size() == 0)
+//            indexOfMostRecentBlock = 0;
+        for (int i = indexOfMostRecentBlock; i > 0; i--) {
             if (!currentPreviousHashEqualsCurrentHashOfPreviousBlock(BC, i)) {
+                System.out.println("A");
                 return false;
-            } else if (!storedHashOfCurrentEqualsWhatItCalculates(BC, indexOfLastBlock)){
+            } else if (!storedHashOfCurrentEqualsWhatItCalculates(BC, indexOfMostRecentBlock)){
+                System.out.println("B");
                 return false;
-            } else if (!currentBlockHasBeenMined(BC, indexOfLastBlock)) {
+            } else if (!currentBlockHasBeenMined(BC, indexOfMostRecentBlock)) {
+                System.out.println("C");
+
                 return false;
             }
         }
@@ -127,18 +134,22 @@ public class Main {
     }
 
     public static boolean currentPreviousHashEqualsCurrentHashOfPreviousBlock(ArrayList<Block> BC, int idx) {
+        String hashInput = BC.get( idx).getHash();
+
         return BC.get(idx).PreviousBlockHash.equals(BC.get( idx - 1).getHash());
     }
+    // TODO: Find the problem with why the current has is calculating differently
     public static boolean storedHashOfCurrentEqualsWhatItCalculates(ArrayList<Block> BC, int indexOfLastBlock) {
-        return BC.get(indexOfLastBlock).calculateBlockHash().equals(BC.get(indexOfLastBlock).getHash());
+
+        return BC.get(indexOfLastBlock).mineBlock(prefix, BC).equals(BC.get(indexOfLastBlock).getHash());
     }
     public static boolean currentBlockHasBeenMined(ArrayList<Block> BC, int indexOfLastBlock) {
-        return BC.get(indexOfLastBlock).getHash() != null;
+        return BC.get(indexOfLastBlock).getHash().substring(0, prefix).equals("0000");
     }
 
 
 
-    public static void askForStakeholder(StakeHolder stakeholder){
+    public static StakeHolder askForStakeholder(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please provide the ID of the stakeholder");
         String id = scanner.nextLine();
@@ -148,45 +159,55 @@ public class Main {
         String address = scanner.nextLine();
         System.out.println("Please provide the balance of the stakeholder");
         Double balance = scanner.nextDouble();
-        stakeholder = new StakeHolder(id, name, address, balance);
+        StakeHolder stakeholder = new StakeHolder(id, name, address, balance);
+        return stakeholder;
 
 
 
     }
 
-    public static void askForArtefact(Artefact artefact){
+    public static Artefact askForArtefact(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please provide the ID of the artefact");
         String id = scanner.nextLine();
         System.out.println("Please provide the name of the artefact");
         String name = scanner.nextLine();
         System.out.println("Please provide the information of the country of origin of this artefact");
-        StakeHolder countryOfOrigin=new StakeHolder();
-        askForStakeholder(countryOfOrigin);
+        StakeHolder countryOfOrigin=askForStakeholder();
         System.out.println("Please provide the information of the owner of this artefact");
-        StakeHolder owner= new StakeHolder();
-        askForStakeholder(owner);
-        artefact = new Artefact(id, name, countryOfOrigin, owner );
+        StakeHolder owner= askForStakeholder();
+
+        Artefact artefact = new Artefact(id, name, countryOfOrigin, owner );
+        return artefact;
 
     }
 
-    public static void askForTransaction(Transaction transaction){
+    public static Transaction askForTransaction(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please provide the information of the artefact in this transaction");
-        Artefact artefact = new Artefact();
-        askForArtefact(artefact);
+        Artefact artefact = askForArtefact();
         System.out.println("Please provide the information of the buyer in this transaction");
-        StakeHolder buyer= new StakeHolder();
-        askForStakeholder(buyer);
-        System.out.println("Please provide the information of the seller in this transaction");
-        StakeHolder seller= new StakeHolder();
-        askForStakeholder(seller);
+        StakeHolder buyer= askForStakeholder();
+        StakeHolder seller= artefact.getOwner();
         System.out.println("Please provide the information of the auctionhouse in this transaction");
-        StakeHolder auctionhouse= new StakeHolder();
-        askForStakeholder(auctionhouse);
+        StakeHolder auctionhouse= askForStakeholder();
         System.out.println("Please provide the price of the transaction");
-        double price= scanner.nextDouble();
-        transaction = new Transaction(artefact, new Date().getTime(),buyer,seller,auctionhouse,price);
+
+        double price= 0.00;
+        boolean priceNotEntered= true;
+        boolean enteredIncorrectly = false;
+        while (priceNotEntered) {
+            while (!scanner.hasNextDouble()) {
+                System.out.println("Try again");
+                scanner.next();
+            }
+            price = scanner.nextDouble();
+
+            priceNotEntered = false;
+        }
+
+        Transaction transaction = new Transaction(artefact, new Date().getTime(),buyer,seller,auctionhouse,price);
+        return transaction ;
     }
 
 }

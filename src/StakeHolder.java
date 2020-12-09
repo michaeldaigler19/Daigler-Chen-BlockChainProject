@@ -5,7 +5,7 @@ public class StakeHolder {
     String Name;
     String Address;
     Double Balance;
-
+    public StakeHolder() {}
     public StakeHolder(String id, String name, String address, Double balance) {
         this.Id = id;
         this.Name = name;

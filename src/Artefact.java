@@ -5,7 +5,7 @@ public class Artefact {
     String Name;
     StakeHolder CountryOfOrigin;
     StakeHolder stakeHolderOwner;
-
+    public Artefact() {}
     public Artefact(String id, String name, StakeHolder countryOfOrigin, StakeHolder owner) {
         this.Id = id;
         this.Name = name;
@@ -46,7 +46,7 @@ public class Artefact {
     }
 
     public String toString (){
-        return Id+ ","+Name+ ","+CountryOfOrigin +","+stakeHolderOwner.toString();
+        return Id+ "," + Name + ","+CountryOfOrigin.toString() +","+stakeHolderOwner.toString();
     }
 
 

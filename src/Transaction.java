@@ -7,6 +7,7 @@ public class Transaction {
     StakeHolder Buyer;
     StakeHolder AuctionHouse;
     Double Price;
+    public Transaction() {}
 
     public Transaction(Artefact artefact, Long timeStamp, StakeHolder seller, StakeHolder buyer, StakeHolder auctionHouse, Double price) {
         this.artefact = artefact;
