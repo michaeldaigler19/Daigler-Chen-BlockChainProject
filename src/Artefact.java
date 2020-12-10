@@ -6,6 +6,7 @@ public class Artefact {
     StakeHolder CountryOfOrigin;
     StakeHolder stakeHolderOwner;
     public Artefact() {}
+
     public Artefact(String id, String name, StakeHolder countryOfOrigin, StakeHolder owner) {
         this.Id = id;
         this.Name = name;

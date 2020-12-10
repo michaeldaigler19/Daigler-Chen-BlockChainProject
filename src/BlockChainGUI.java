@@ -15,18 +15,12 @@ public class BlockChainGUI extends JFrame implements ActionListener {
         private int prefix = 4;
 
         private JPanel block = new JPanel();
-//        private TabbedPane tabbedPane = new TabbedPane();
         private JTabbedPane mainPanel = new JTabbedPane();
         private  Frame frame = new Frame("Block Chain Project");
         private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         private GlassPane glassPane = new GlassPane();
         public BlockChainGUI() {
-//            javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//                public void run() {
-//                    glassPane.createAndShowGUI();
-//                }
-//            });
-//            setupLayout2();
+
             EventQueue.invokeLater(() -> {
 
                 var ex = new TabbedPane();
@@ -35,9 +29,7 @@ public class BlockChainGUI extends JFrame implements ActionListener {
 
         }
 
-        public void setupLayout() {
-//            makeFrame();
-        }
+
 
         public void setupLayout2() {
             frame.setSize(400,300);
@@ -51,42 +43,7 @@ public class BlockChainGUI extends JFrame implements ActionListener {
         }
 
 
-     public  void makeFrame() {
-         int width = screenSize.width / 2;
-         int height = screenSize.height / 2;
-         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30,10,30));
-         mainPanel.setLayout(new GridLayout(0,1));
 
-
-         frame.setBackground(Color.GRAY);
-
-
-//         addComponentsToPane();
-
-//         frame.add(mainPanel, BorderLayout.CENTER);
-         frame.pack();
-        frame.setVisible(true);
-
-    }
-    private void createLayout(JComponent... arg) {
-
-        var pane = getContentPane();
-        var gl = new GroupLayout(pane);
-        pane.setLayout(gl);
-
-        gl.setAutoCreateContainerGaps(true);
-        gl.setAutoCreateGaps(true);
-
-        gl.setHorizontalGroup(gl.createSequentialGroup()
-                .addComponent(arg[0])
-        );
-
-        gl.setVerticalGroup(gl.createParallelGroup()
-                .addComponent(arg[0])
-        );
-
-        pack();
-    }
 
 
     public  void addComponentsToPane() {

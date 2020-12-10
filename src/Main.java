@@ -21,11 +21,10 @@ public class Main {
     final static Date dateBefore2001 = myCalendar.getTime();
     static int prefix = 4;
     public static void main(String args[]) {
-//        g.start();
         Scanner scanner = new Scanner(System.in);
 
 
-//        ArrayList<Block> blockchain = new ArrayList<>();
+
            //we want our hash to start with four zeroes
         String prefixString = new String(new char[prefix]).replace('\0', '0');
 
@@ -38,20 +37,20 @@ public class Main {
         createBlock(data2.transaction3, prefix, blockchain);
         createBlock(data3.transaction3, prefix, blockchain);
 
-//        Transaction transaction = new Transaction();
-//        boolean end = false;
-//        while (!end) {
-//
-//            createBlock(askForTransaction(), prefix, blockchain);
-//            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
-//            String response = scanner.nextLine();
-//            if (response.equals("no")) {
-//                end = true;
-//            } else {
-//                end = false;
-//            }
-//        }
-//        System.out.println(blockchain.get(0).Data.toString());
+        Transaction transaction = new Transaction();
+        boolean end = false;
+        while (!end) {
+
+            createBlock(askForTransaction(), prefix, blockchain);
+            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
+            String response = scanner.nextLine();
+            if (response.equals("no")) {
+                end = true;
+            } else {
+                end = false;
+            }
+        }
+        System.out.println(blockchain.get(0).Data.toString());
             writeTransactionToFile();
         BlockChainGUI g = new BlockChainGUI();
 
@@ -65,7 +64,7 @@ public class Main {
         } catch (FileNotFoundException e) {
             System.out.println("File could not be opened for output- closing program");
             System.exit(1);
-        } // ends catch
+        }
 
         fileWriter = new PrintWriter(output, true);
 
@@ -75,11 +74,10 @@ public class Main {
         }
     }
 
-
     public static void createBlock(Transaction transaction, int prefix ,ArrayList<Block> blockchain){
         String prefixString = new String(new char[prefix]).replace('\0', '0');
         if(blockchain.size() == 0) {
-            Block genesisBlock = new Block(transaction, "0000", dateBefore2001.getTime());
+            Block genesisBlock = new Block(transaction, "0000", new Date().getTime());
 
             genesisBlock.mineBlock(prefix, blockchain);
             if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain))
@@ -93,10 +91,11 @@ public class Main {
             if (regularBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
                 blockchain.add(regularBlock);
             else
-                System.out.println("Malicious block, not added to the chain XXX");
+                System.out.println("Malicious block, not added to the chain");
 
         }
     }
+
 
     public static ArrayList<Transaction> retrieveProvenance(String id, ArrayList<Block> blockchain ) {
         ArrayList<Transaction> previousTransactions = new ArrayList<Transaction>();
@@ -109,24 +108,20 @@ public class Main {
         return previousTransactions;
     }
 
-
-
-
     public static boolean verify_Blockchain(ArrayList<Block> BC){
-
-        int indexOfMostRecentBlock = BC.size() - 1;
-//        if (BC.size() == 0)
-//            indexOfMostRecentBlock = 0;
-        for (int i = indexOfMostRecentBlock; i > 0; i--) {
+        int indexOfLastBlock = BC.size() - 1;
+        if (BC.size()==0){
+            indexOfLastBlock = 0;
+        }
+        for (int i = indexOfLastBlock; i > 0; i--) {
             if (!currentPreviousHashEqualsCurrentHashOfPreviousBlock(BC, i)) {
-                System.out.println("A");
+                System.out.println("The hash of the previous block does not equal the previous hash stored in this block");
                 return false;
-            } else if (!storedHashOfCurrentEqualsWhatItCalculates(BC, indexOfMostRecentBlock)){
-                System.out.println("B");
+            } else if (!storedHashOfCurrentEqualsWhatItCalculates(BC, indexOfLastBlock)){
+                System.out.println("The hash does not equal to what it calculates to be");
                 return false;
-            } else if (!currentBlockHasBeenMined(BC, indexOfMostRecentBlock)) {
-                System.out.println("C");
-
+            } else if (!currentBlockHasBeenMined(BC, indexOfLastBlock)) {
+                System.out.println("The block has not been mined");
                 return false;
             }
         }
@@ -134,17 +129,13 @@ public class Main {
     }
 
     public static boolean currentPreviousHashEqualsCurrentHashOfPreviousBlock(ArrayList<Block> BC, int idx) {
-        String hashInput = BC.get( idx).getHash();
-
         return BC.get(idx).PreviousBlockHash.equals(BC.get( idx - 1).getHash());
     }
-    // TODO: Find the problem with why the current has is calculating differently
     public static boolean storedHashOfCurrentEqualsWhatItCalculates(ArrayList<Block> BC, int indexOfLastBlock) {
-
-        return BC.get(indexOfLastBlock).mineBlock(prefix, BC).equals(BC.get(indexOfLastBlock).getHash());
+        return !BC.get(indexOfLastBlock).getHash().equals(BC.get(indexOfLastBlock).calculateBlockHash());
     }
     public static boolean currentBlockHasBeenMined(ArrayList<Block> BC, int indexOfLastBlock) {
-        return BC.get(indexOfLastBlock).getHash().substring(0, prefix).equals("0000");
+        return BC.get(indexOfLastBlock).getHash().substring(0,4).equals("0000");
     }
 
 
@@ -206,6 +197,7 @@ public class Main {
             priceNotEntered = false;
         }
 
+//
         Transaction transaction = new Transaction(artefact, new Date().getTime(),buyer,seller,auctionhouse,price);
         return transaction ;
     }

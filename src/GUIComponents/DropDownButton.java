@@ -22,7 +22,7 @@ public class DropDownButton extends JPanel
         TestData data1 = new TestData();
         ArrayList<Artefact> artefactChoices = new ArrayList<>();
         artefactChoices.add(data1.transaction3.getArtefact());
-        artefactChoices.add(data1.transactsion2.getArtefact());
+        artefactChoices.add(data1.transaction2.getArtefact());
         artefactChoices.add(data1.transaction1.getArtefact());
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         String[] patternExamples = {
