@@ -93,14 +93,20 @@ public class Main {
         return previousTransactions;
     }
 
-    public static boolean verify_Blockchain2(ArrayList<Block> BC){
+    public static boolean verify_Blockchain(ArrayList<Block> BC){
         int indexOfLastBlock = BC.size() - 1;
+        if (BC.size()==0){
+            indexOfLastBlock = 0;
+        }
         for (int i = indexOfLastBlock; i > 0; i--) {
             if (!currentPreviousHashEqualsCurrentHashOfPreviousBlock(BC, i)) {
+                System.out.println("The hash of the previous block does not equal the previous hash stored in this block");
                 return false;
             } else if (!storedHashOfCurrentEqualsWhatItCalculates(BC, indexOfLastBlock)){
+                System.out.println("The hash does not equal to what it calculates to be");
                 return false;
             } else if (!currentBlockHasBeenMined(BC, indexOfLastBlock)) {
+                System.out.println("The block has not been mined");
                 return false;
             }
         }
@@ -114,23 +120,10 @@ public class Main {
         return BC.get(indexOfLastBlock).calculateBlockHash().equals(BC.get(indexOfLastBlock).getHash());
     }
     public static boolean currentBlockHasBeenMined(ArrayList<Block> BC, int indexOfLastBlock) {
-        return BC.get(indexOfLastBlock).getHash() != null;
+        return BC.get(indexOfLastBlock).getHash().substring(0,4).equals("0000");
     }
 
 
-    public static boolean verify_Blockchain(ArrayList<Block> BC){
-        int indexOfLastBlock = BC.size() - 1;
-        for (int i = indexOfLastBlock; i > 0; i--) {
-            if (!BC.get(i).PreviousBlockHash.equals(BC.get( i- 1).getHash())) {
-                return false;
-            } else if (!BC.get(indexOfLastBlock).calculateBlockHash().equals(BC.get(indexOfLastBlock).getHash())){
-                return false;
-            } else if (BC.get(indexOfLastBlock).getHash().substring(0,3).equals("0000")) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static StakeHolder askForStakeholder(){
         Scanner scanner = new Scanner(System.in);
@@ -189,16 +182,7 @@ public class Main {
                 priceNotEntered = false;
         }
 
-//        while(priceNotEntered) {
-//            try {
-//                price = scanner.nextDouble();
-//                priceNotEntered=false;
-//            } catch (InputMismatchException e1) {
-//                System.out.println("the input is not a valid number");
-//                //continue;
-//            }
 //
-//        }
         Transaction transaction = new Transaction(artefact, new Date().getTime(),buyer,seller,auctionhouse,price);
         return transaction ;
     }

@@ -16,7 +16,7 @@ public class Block {
     Integer nonce;
 
 
-    public Block( Transaction data,String previousBlockHash ,Long timeStamp) {
+    public Block(Transaction data,String previousBlockHash ,Long timeStamp) {
         this.PreviousBlockHash = previousBlockHash;
 
         this.Data = data;
@@ -62,12 +62,14 @@ public class Block {
 
             }
             DistributeCash(this.Data, blockchain);
+            System.out.println(CurrentBlockHash);
+            System.out.println("The block has been successfully mined");
         }
         else {
             System.out.println("This transaction has been terminated, block not mined");
         }
 
-        System.out.println(CurrentBlockHash);
+
         return this.CurrentBlockHash;
 
 
