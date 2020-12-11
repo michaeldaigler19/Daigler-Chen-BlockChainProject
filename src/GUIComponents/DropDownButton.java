@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.text.SimpleDateFormat;
 
@@ -17,6 +19,7 @@ public class DropDownButton extends JPanel
     static JFrame frame;
     JLabel result;
     String currentPattern;
+    public ArrayList<String> dataHolder = new ArrayList<>();
 
     public DropDownButton() {
         TestData data1 = new TestData();
@@ -25,13 +28,9 @@ public class DropDownButton extends JPanel
         artefactChoices.add(data1.transaction2.getArtefact());
         artefactChoices.add(data1.transaction1.getArtefact());
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-        String[] patternExamples = {
-            artefactChoices.get(0).toString(),
-                artefactChoices.get(1).toString(),
-                artefactChoices.get(2).toString(),
 
-        };
-
+        fetchData();
+        String[] patternExamples = new String[dataHolder.size()];
         currentPattern = patternExamples[0];
 
         //Set up the UI for selecting a pattern.
@@ -83,6 +82,24 @@ public class DropDownButton extends JPanel
         currentPattern = newSelection;
 //        reformat();
     }
+
+    public void fetchData() {
+        Scanner fileReader = new Scanner(System.in);
+                FileInputStream data;
+        try {
+            data = new FileInputStream("TransactionData.txt");
+            fileReader = new Scanner(data);
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not retrieve data from file: " + e.getMessage());
+        }
+
+        while (fileReader.hasNext()) {
+            String currData = fileReader.nextLine();
+            System.out.println(currData);
+            dataHolder.add(currData);
+        }
+    }
+
 
     /** Formats and displays today's date. */
 //    public void reformat() {

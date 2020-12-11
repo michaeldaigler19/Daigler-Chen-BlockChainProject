@@ -1,5 +1,7 @@
 package src;
 
+import src.GUIComponents.TabbedPane;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -16,7 +18,7 @@ import java.util.*;
  */
 public class Main {
     final static public String PREVIOUS_HASH_FOR_GENISIS_BLOCK = "0000";
-    public static ArrayList<Block> blockchain = new ArrayList<>();
+//    public static ArrayList<Block> blockchain = new ArrayList<>();
     private static Calendar myCalendar = new GregorianCalendar(2000,2,11);
     final static Date dateBefore2001 = myCalendar.getTime();
     static int prefix = 4;
@@ -29,38 +31,40 @@ public class Main {
         String prefixString = new String(new char[prefix]).replace('\0', '0');
 
         //data1-data3 should be filled by the user
-
+        ArrayList<Block> blockchain = new ArrayList<>();
         TestData data1 = new TestData();
         TestData data2 = new TestData();
         TestData data3 = new TestData();
-        createBlock(data1.transaction3, prefix, blockchain);
-        createBlock(data2.transaction3, prefix, blockchain);
+        createBlock(data1.transaction1, prefix, blockchain);
+        createBlock(data2.transaction2, prefix, blockchain);
         createBlock(data3.transaction3, prefix, blockchain);
 
         Transaction transaction = new Transaction();
         boolean end = false;
-        while (!end) {
-
-            createBlock(askForTransaction(), prefix, blockchain);
-            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
-            String response = scanner.nextLine();
-            if (response.equals("no")) {
-                end = true;
-            } else {
-                end = false;
-            }
-        }
+//        while (!end) {
+//
+//            createBlock(askForTransaction(), prefix, blockchain);
+//            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
+//            String response = scanner.nextLine();
+//            if (response.equals("no")) {
+//                end = true;
+//            } else {
+//                end = false;
+//            }
+//        }
         System.out.println(blockchain.get(0).Data.toString());
-            writeTransactionToFile();
-        BlockChainGUI g = new BlockChainGUI();
+            writeTransactionToFile(blockchain);
+//        BlockChainGUI g = new BlockChainGUI();
+        TabbedPane tabbedPane = new TabbedPane();
+
 
     }
 
-    public static void writeTransactionToFile() {
+    public static void writeTransactionToFile(ArrayList<Block> blockchain) {
         FileOutputStream output = null;
         PrintWriter fileWriter;
         try {
-            output = new FileOutputStream("Transaction data.txt", true);
+            output = new FileOutputStream("TransactionData.txt", true);
         } catch (FileNotFoundException e) {
             System.out.println("File could not be opened for output- closing program");
             System.exit(1);
@@ -77,7 +81,7 @@ public class Main {
     public static void createBlock(Transaction transaction, int prefix ,ArrayList<Block> blockchain){
         String prefixString = new String(new char[prefix]).replace('\0', '0');
         if(blockchain.size() == 0) {
-            Block genesisBlock = new Block(transaction, "0000", new Date().getTime());
+            Block genesisBlock = new Block(transaction, PREVIOUS_HASH_FOR_GENISIS_BLOCK, dateBefore2001.getTime());
 
             genesisBlock.mineBlock(prefix, blockchain);
             if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain))
@@ -110,7 +114,7 @@ public class Main {
 
     public static boolean verify_Blockchain(ArrayList<Block> BC){
         int indexOfLastBlock = BC.size() - 1;
-        if (BC.size()==0){
+        if (BC.size() == 0){
             indexOfLastBlock = 0;
         }
         for (int i = indexOfLastBlock; i > 0; i--) {

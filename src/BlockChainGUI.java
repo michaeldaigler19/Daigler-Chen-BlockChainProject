@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -19,17 +20,25 @@ public class BlockChainGUI extends JFrame implements ActionListener {
         private  Frame frame = new Frame("Block Chain Project");
         private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         private GlassPane glassPane = new GlassPane();
+
         public BlockChainGUI() {
 
             EventQueue.invokeLater(() -> {
+//                var ex = new TabbedPane();
+                TabbedPane tabbedPane = new TabbedPane();
+//                JScrollPane scrollPane = new JScrollPane(tabbedPane);
+//                scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//                scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                tabbedPane.setSize(screenSize.width / 2, screenSize.width / 2);
 
-                var ex = new TabbedPane();
-                ex.setVisible(true);
+                tabbedPane.setVisible(true);
             });
 
         }
 
-
+        public void setupLayout() {
+//            makeFrame();
+        }
 
         public void setupLayout2() {
             frame.setSize(400,300);
@@ -43,7 +52,42 @@ public class BlockChainGUI extends JFrame implements ActionListener {
         }
 
 
+     public  void makeFrame() {
+         int width = screenSize.width / 2;
+         int height = screenSize.height / 2;
+         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30,10,30));
+         mainPanel.setLayout(new GridLayout(0,1));
 
+
+         frame.setBackground(Color.GRAY);
+
+
+//         addComponentsToPane();
+
+//         frame.add(mainPanel, BorderLayout.CENTER);
+         frame.pack();
+        frame.setVisible(true);
+
+    }
+    private void createLayout(JComponent... arg) {
+
+        var pane = getContentPane();
+        var gl = new GroupLayout(pane);
+        pane.setLayout(gl);
+
+        gl.setAutoCreateContainerGaps(true);
+        gl.setAutoCreateGaps(true);
+
+        gl.setHorizontalGroup(gl.createSequentialGroup()
+                .addComponent(arg[0])
+        );
+
+        gl.setVerticalGroup(gl.createParallelGroup()
+                .addComponent(arg[0])
+        );
+
+        pack();
+    }
 
 
     public  void addComponentsToPane() {

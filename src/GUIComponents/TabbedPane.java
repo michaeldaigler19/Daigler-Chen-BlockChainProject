@@ -10,13 +10,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class TabbedPane extends JFrame {
+    private final int width = 600;
+    private final int height = 800;
+
     DropDownButton dropDownButtonArtefact = new DropDownButton();
+    private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public TabbedPane() {
 
         initUI();
 
+
+
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                 dropDownButtonArtefact.fetchData();
                 dropDownButtonArtefact.createAndShowGUI();
             }
         });
@@ -30,9 +37,11 @@ public class TabbedPane extends JFrame {
         tabbedPane.addTab("Transactions", createPanel("Create Transaction"));
 
 //        tabbedPane.getTabComponentAt(0).add();
-        createLayout(tabbedPane);
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
+        createLayout(tabbedPane);
         setLocationRelativeTo(null);
+        setSize(width, height);
         setVisible(true);
     }
 
@@ -43,6 +52,8 @@ public class TabbedPane extends JFrame {
         var lbl2 = new JLabel();
         panel.add(lbl);
         panel.add(lbl2);
+        JScrollPane scrollBar=new JScrollPane(panel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
         if (text.equals("Create Transaction")) {
             CustomTextField artefactNameTextField = new CustomTextField(1);
             artefactNameTextField.setPlaceholder("Artefact Name");
@@ -62,15 +73,14 @@ public class TabbedPane extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     Artefact userInputArtefact = new Artefact();
                     Transaction userInputTransaction = new Transaction();
-                    Main.writeTransactionToFile();
+//                    Main.writeTransactionToFile();
                     lbl2.setText("Success!");
                     setTimeout(() -> lbl2.setText(""), 2000);
 
                 }
             });
-            panel.setLayout(new GridLayout(6,1,5,10));
+            panel.setLayout(new GridLayout(6,1,5,50));
             panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
             panel.add(artefactNameTextField);
             panel.add(timestampTextField);
             panel.add(buyerTextField);
@@ -79,6 +89,11 @@ public class TabbedPane extends JFrame {
             panel.add(priceTextField);
             panel.add(creatTransactionButton);
             panel.add(dropDownButtonArtefact);
+            panel.setSize(width, height );
+            scrollBar.createHorizontalScrollBar();
+            scrollBar.createVerticalScrollBar();
+            add(scrollBar);
+
         }
         return panel;
     }
@@ -111,7 +126,6 @@ public class TabbedPane extends JFrame {
         gl.setVerticalGroup(gl.createParallelGroup()
                 .addComponent(arg[0])
         );
-
         pack();
     }
 

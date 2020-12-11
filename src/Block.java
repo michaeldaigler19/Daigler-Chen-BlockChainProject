@@ -22,6 +22,8 @@ public class Block {
         this.Data = data;
         this.TimeStamp = timeStamp;
         this.nonce = (int)(Math.random() * 100);
+        this.PreviousBlockHash = previousBlockHash;
+
         if ( previousBlockHash.equals(Main.PREVIOUS_HASH_FOR_GENISIS_BLOCK) ){
             this.PreviousBlockHash = Main.PREVIOUS_HASH_FOR_GENISIS_BLOCK;
             this.CurrentBlockHash = calculateBlockHash();
@@ -62,7 +64,7 @@ public class Block {
 
             }
             DistributeCash(this.Data, blockchain);
-            System.out.println(CurrentBlockHash);
+//            System.out.println(CurrentBlockHash);
             System.out.println("The block has been successfully mined");
         }
         else {
@@ -132,4 +134,9 @@ public class Block {
         return this.CurrentBlockHash;
 
     }
+
+    public String getPreviousHash() {
+        return this.PreviousBlockHash;
+    }
+
 }
