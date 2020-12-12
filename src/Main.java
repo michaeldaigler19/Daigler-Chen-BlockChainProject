@@ -1,68 +1,114 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.JFrame;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.time.Year;
 import java.util.*;
-public class Main {
+
+// Notes about conceptual overview:
+// Each transaction there should be a new block
+// Ask user all info
+/**
+ * Enter all users in system
+ * User enters transactions -> select a buyer /  seller + artefact -> then pull rest of data from the data set
+ * user wants to make a transaction -> go through all steps: make new Block, mine c=block and verify, add to blockchain if verified
+ */
+public class Main extends Frame implements ActionListener {
+    final static public String PREVIOUS_HASH_FOR_GENISIS_BLOCK = "0000";
+    //    public static ArrayList<Block> blockchain = new ArrayList<>();
+    private static Calendar myCalendar = new GregorianCalendar(2000,2,11);
+    final static Date dateBefore2001 = myCalendar.getTime();
+    public static ArrayList<Block> blockchain = new ArrayList<>();
+
+
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
+        int prefix = 4;
 
-        ArrayList<Block> blockchain = new ArrayList<>();
-        int prefix = 4;   //we want our hash to start with four zeroes
+
+
+        //we want our hash to start with four zeroes
         String prefixString = new String(new char[prefix]).replace('\0', '0');
 
         //data1-data3 should be filled by the user
-       TestData data1 = new TestData();
-       TestData data2 = new TestData();
-       TestData data3 = new TestData();
-       createBlock(data1.transaction1,prefix, blockchain);
-       createBlock(data2.transaction2,prefix, blockchain);
-       createBlock(data3.transaction3,prefix, blockchain);
 
-       Transaction transaction = new Transaction();
-       Boolean end = false;
-       while(end==false) {
-
-           createBlock(askForTransaction(), prefix, blockchain);
-           System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
-           String response = scanner.nextLine();
-           if (response.equals("no")){
-               end=true;
-           }
-           else {
-               end = false;
-           }
-       }
-        System.out.println (blockchain.get(0).Data.ToString());
-        FileOutputStream output = null;
-        PrintWriter fileWriter;
-        try {
-            output = new FileOutputStream("Transaction data.txt", true);
-        }
-        catch (FileNotFoundException e){
-            System.out.println ("File could not be opened for output- closing program");
-            System.exit(1);
-        } // ends catch
-
-        fileWriter=new PrintWriter(output, true);
+        TestData data1 = new TestData();
+        TestData data2 = new TestData();
+        TestData data3 = new TestData();
+        createBlock(data1.transaction1, prefix, blockchain);
+        System.out.println("Test block successfully mined");
+        createBlock(data2.transaction2, prefix, blockchain);
+        System.out.println("Test block successfully mined");
+        createBlock(data3.transaction3, prefix, blockchain);
+        System.out.println("Test block successfully mined");
 
 
-        for(int i =0; i<blockchain.size();i++){ //writes all the information to a file
-            fileWriter.println(blockchain.get(i).Data.ToString());
-        }
+        //---------------------------------------------------------------
+
+        GUI cl = new GUI();
+
+        // Function to set size of JFrame.
+        cl.setSize(500, 400);
+
+        // Function to set visibility of JFrame.
+        cl.setVisible(true);
+
+        // Function to set default operation of JFrame.
+        cl.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
 
+        //-----------------------------------------------------------------------
 
+    //    Transaction transaction = new Transaction();
+   //     boolean end = false;
 
+//        while (!end) {
+//
+//            createBlock(askForTransaction(), prefix, blockchain);
+//            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
+//            String response = scanner.nextLine();
+//            if (response.equals("no")) {
+//                end = true;
+//            } else {
+//                end = false;
+//            }
+//        }
+
+        //writeTransactionToFile(blockchain);
+//        BlockChainGUI g = new BlockChainGUI();
 
 
 
     }
 
+    public static void writeTransactionToFile(ArrayList<Block> blockchain) {
+        FileOutputStream output = null;
+        PrintWriter fileWriter;
+        try {
+            output = new FileOutputStream("TransactionData.txt", true);
+        } catch (FileNotFoundException e) {
+            System.out.println("File could not be opened for output- closing program");
+            System.exit(1);
+        }
+
+        fileWriter = new PrintWriter(output, true);
+
+
+        for (int i = 0; i < blockchain.size(); i++) {
+            fileWriter.println(blockchain.get(i).Data.ToString());
+        }
+    }
+
     public static void createBlock(Transaction transaction, int prefix ,ArrayList<Block> blockchain){
         String prefixString = new String(new char[prefix]).replace('\0', '0');
-        if(blockchain.size()==0) {
-            Block genesisBlock = new Block(transaction, "0000", new Date().getTime());
+        if(blockchain.size() == 0) {
+            Block genesisBlock = new Block(transaction, PREVIOUS_HASH_FOR_GENISIS_BLOCK, dateBefore2001.getTime());
 
             genesisBlock.mineBlock(prefix, blockchain);
             if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain))
@@ -71,7 +117,7 @@ public class Main {
                 System.out.println("Malicious block, not added to the chain");
         }
         else {
-            Block regularBlock = new Block(transaction, blockchain.get(blockchain.size() - 1).getHash(), new Date().getTime());
+            Block regularBlock = new Block(transaction, blockchain.get(blockchain.size() - 1).getHash(), dateBefore2001.getTime());
             regularBlock.mineBlock(prefix, blockchain);
             if (regularBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
                 blockchain.add(regularBlock);
@@ -95,9 +141,11 @@ public class Main {
 
     public static boolean verify_Blockchain(ArrayList<Block> BC){
         int indexOfLastBlock = BC.size() - 1;
-        if (BC.size()==0){
+
+        if (BC.size() == 0){
             indexOfLastBlock = 0;
         }
+
         for (int i = indexOfLastBlock; i > 0; i--) {
             if (!currentPreviousHashEqualsCurrentHashOfPreviousBlock(BC, i)) {
                 System.out.println("The hash of the previous block does not equal the previous hash stored in this block");
@@ -117,7 +165,7 @@ public class Main {
         return BC.get(idx).PreviousBlockHash.equals(BC.get( idx - 1).getHash());
     }
     public static boolean storedHashOfCurrentEqualsWhatItCalculates(ArrayList<Block> BC, int indexOfLastBlock) {
-        return BC.get(indexOfLastBlock).calculateBlockHash().equals(BC.get(indexOfLastBlock).getHash());
+        return BC.get(indexOfLastBlock).getHash().equals(BC.get(indexOfLastBlock).calculateBlockHash());
     }
     public static boolean currentBlockHasBeenMined(ArrayList<Block> BC, int indexOfLastBlock) {
         return BC.get(indexOfLastBlock).getHash().substring(0,4).equals("0000");
@@ -134,7 +182,7 @@ public class Main {
         System.out.println("Please provide the address of the stakeholder");
         String address = scanner.nextLine();
         System.out.println("Please provide the balance of the stakeholder");
-        Double balance = scanner.nextDouble();
+        double balance=checkForInvalidDouble();
         StakeHolder stakeholder = new StakeHolder(id, name, address, balance);
         return stakeholder;
 
@@ -169,23 +217,40 @@ public class Main {
         StakeHolder auctionhouse= askForStakeholder();
         System.out.println("Please provide the price of the transaction");
 
-        double price= 0.00;
-        boolean priceNotEntered= true;
-        boolean enteredIncorrectly = false;
-        while (priceNotEntered) {
-            while (!scanner.hasNextDouble()) {
-                System.out.println("Try again");
-                scanner.next();
-            }
-            price = scanner.nextDouble();
+        double price=checkForInvalidDouble();
 
-                priceNotEntered = false;
-        }
 
 //
         Transaction transaction = new Transaction(artefact, new Date().getTime(),buyer,seller,auctionhouse,price);
         return transaction ;
     }
+    public static double checkForInvalidDouble(){
+        Scanner scanner = new Scanner(System.in);
+        double number= 0.00;
+        boolean numberNotEntered= true;
+        boolean enteredIncorrectly = false;
+        while (numberNotEntered) {
+            while (!scanner.hasNextDouble()) {
+                System.out.println("Please enter a valid number, try again");
+                scanner.next();
+            }
+            number = scanner.nextDouble();
+
+            numberNotEntered = false;
+
+    }
+        return number;
+
+}
 
 
+
+
+
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
 }

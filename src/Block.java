@@ -1,3 +1,5 @@
+
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,17 +19,17 @@ public class Block {
 
 
     public Block(Transaction data,String previousBlockHash ,Long timeStamp) {
-        this.PreviousBlockHash = previousBlockHash;
-
         this.Data = data;
         this.TimeStamp = timeStamp;
-        Random r = new Random(9999);
-        this.nonce = r.nextInt();
-        if (this.PreviousBlockHash.equals("0")){
-            this.CurrentBlockHash = "0";
-        }
-        else {this.CurrentBlockHash = calculateBlockHash();
+        this.nonce = (int)(Math.random() * 100);
+        this.PreviousBlockHash = previousBlockHash;
 
+        if ( previousBlockHash.equals(Main.PREVIOUS_HASH_FOR_GENISIS_BLOCK) ){
+            this.PreviousBlockHash = Main.PREVIOUS_HASH_FOR_GENISIS_BLOCK;
+            this.CurrentBlockHash = calculateBlockHash();
+        } else {
+            this.PreviousBlockHash = previousBlockHash;
+            this.CurrentBlockHash = calculateBlockHash();
         }
     }
 
@@ -62,8 +64,8 @@ public class Block {
 
             }
             DistributeCash(this.Data, blockchain);
-            System.out.println(CurrentBlockHash);
-            System.out.println("The block has been successfully mined");
+//            System.out.println(CurrentBlockHash);
+            //System.out.println("The block has been successfully mined");
         }
         else {
             System.out.println("This transaction has been terminated, block not mined");
@@ -81,7 +83,7 @@ public class Block {
                 return false;
             }
         }
-        if (transaction.getBuyer().getBalance()<= transaction.getPrice()){
+        if (transaction.getBuyer().getBalance()< transaction.getPrice()){
             System.out.println("The buyer cannot afford the price");
             return false;
 
@@ -105,7 +107,7 @@ public class Block {
     }
 
     public void DistributeCash(Transaction transaction, ArrayList<Block> blockchain){
-        if (TreatySC(transaction, blockchain)==true){
+        if (TreatySC(transaction, blockchain)){
             //distribute profits
             transaction.getAuctionhouse().setBalance(transaction.getAuctionhouse().getBalance()+transaction.getPrice()*0.1);
             transaction.getSeller().setBalance(transaction.getSeller().getBalance()+transaction.getPrice()*0.7);
@@ -132,4 +134,9 @@ public class Block {
         return this.CurrentBlockHash;
 
     }
+
+    public String getPreviousHash() {
+        return this.PreviousBlockHash;
+    }
+
 }
