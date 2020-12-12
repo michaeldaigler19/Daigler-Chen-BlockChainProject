@@ -47,7 +47,7 @@ public class Artefact {
     }
 
     public String ToString (){
-        return Id+ ","+Name+ ","+CountryOfOrigin.ToString() +","+stakeHolderOwner.ToString();
+        return "Artefact ID: "+Id+ ","+"Artefact Name: "+Name+ ", Country of origin: "+CountryOfOrigin.ToString() +", Owner: "+stakeHolderOwner.ToString();
     }
 
 

@@ -49,7 +49,7 @@ public class StakeHolder {
 
 
     public String ToString (){
-        return Id+ ","+Name+ ","+Address+ ","+Balance;
+        return "ID: "+Id+ ","+"Name: "+Name+ ","+"Address: "+Address+ ","+"Balance: "+Balance;
     }
 
     // Need Setter and getters for each

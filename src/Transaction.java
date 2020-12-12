@@ -69,7 +69,7 @@ public class Transaction {
     }
 
     public String ToString (){
-        return artefact.ToString()+ ","+ ","+Seller.ToString() +","+Buyer.ToString()+","+AuctionHouse.ToString()+","+Price  ;
+        return artefact.ToString()+ ", Seller: "+Seller.ToString() +", Buyer: "+Buyer.ToString()+", Auctionhouse: "+AuctionHouse.ToString()+", Price:"+Price  ;
     }
 
     // need setters and getters
