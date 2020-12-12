@@ -2,6 +2,7 @@ package src;
 
 import src.GUIComponents.TabbedPane;
 
+import javax.swing.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -18,7 +19,7 @@ import java.util.*;
  */
 public class Main {
     final static public String PREVIOUS_HASH_FOR_GENISIS_BLOCK = "0000";
-//    public static ArrayList<Block> blockchain = new ArrayList<>();
+    public static ArrayList<Block> blockchain = new ArrayList<>();
     private static Calendar myCalendar = new GregorianCalendar(2000,2,11);
     final static Date dateBefore2001 = myCalendar.getTime();
     static int prefix = 4;
@@ -31,7 +32,6 @@ public class Main {
         String prefixString = new String(new char[prefix]).replace('\0', '0');
 
         //data1-data3 should be filled by the user
-        ArrayList<Block> blockchain = new ArrayList<>();
         TestData data1 = new TestData();
         TestData data2 = new TestData();
         TestData data3 = new TestData();
@@ -39,23 +39,27 @@ public class Main {
         createBlock(data2.transaction2, prefix, blockchain);
         createBlock(data3.transaction3, prefix, blockchain);
 
+        GUI cl = new GUI();
+        cl.setSize(500, 400);
+        cl.setVisible(true);
+        cl.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
         Transaction transaction = new Transaction();
         boolean end = false;
-//        while (!end) {
-//
-//            createBlock(askForTransaction(), prefix, blockchain);
-//            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
-//            String response = scanner.nextLine();
-//            if (response.equals("no")) {
-//                end = true;
-//            } else {
-//                end = false;
-//            }
-//        }
+        while (!end) {
+
+            createBlock(askForTransaction(), prefix, blockchain);
+            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
+            String response = scanner.nextLine();
+            if (response.equals("no")) {
+                end = true;
+            } else {
+                end = false;
+            }
+        }
         System.out.println(blockchain.get(0).Data.toString());
-            writeTransactionToFile(blockchain);
-//        BlockChainGUI g = new BlockChainGUI();
-        TabbedPane tabbedPane = new TabbedPane();
+        writeTransactionToFile(blockchain);
+
 
 
     }
