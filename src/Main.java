@@ -39,26 +39,30 @@ public class Main {
         createBlock(data2.transaction2, prefix, blockchain);
         createBlock(data3.transaction3, prefix, blockchain);
 
+//        --- Use this for GUI input ---------
+
         GUI cl = new GUI();
         cl.setSize(500, 400);
         cl.setVisible(true);
         cl.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        Transaction transaction = new Transaction();
-        boolean end = false;
-        while (!end) {
 
-            createBlock(askForTransaction(), prefix, blockchain);
-            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
-            String response = scanner.nextLine();
-            if (response.equals("no")) {
-                end = true;
-            } else {
-                end = false;
-            }
-        }
-        System.out.println(blockchain.get(0).Data.toString());
-        writeTransactionToFile(blockchain);
+
+//        ----------- This is for the terminal input ------
+//        Transaction transaction = new Transaction();
+//        boolean end = false;
+//        while (!end) {
+//
+//            createBlock(askForTransaction(), prefix, blockchain);
+//            System.out.println("Do you wish to enter another transaction? Answer 'yes' or 'no'");
+//            String response = scanner.nextLine();
+//            if (response.equals("no")) {
+//                end = true;
+//            } else {
+//                end = false;
+//            }
+//        }
+//        writeTransactionToFile(blockchain);
 
 
 
