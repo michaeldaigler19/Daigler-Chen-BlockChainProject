@@ -8,20 +8,20 @@ import java.util.concurrent.TimeUnit;
 public class GUI extends JFrame implements ActionListener {
     protected JButton enter, next, toggle;
     private Label lblInput;     // Declare input Label
-    private Label lblOutput;    // Declare output Label
+
     private Label label1;
     private Label label2;
     private Label label3;
     private Label label4, label5, label6, label7, label8, label9, label10;
-    private Button button1;
+
 
     private TextField Input1;  // Declare input TextField
     private TextField Input2;
     private TextField Input3;
     private TextField Input4, Input5, Input6, Input7, Input8;
 
-    private TextField tfOutput; // Declare output TextField
-    private int sum = 0;        // Accumulated sum, init to 0
+
+
 
     int counter=0;
     String oId ="" ;
@@ -44,16 +44,14 @@ public class GUI extends JFrame implements ActionListener {
     // Constructor to setup the GUI components and event handlers
     public GUI() {
 
-        //CardLayout c1= new CardLayout();
 
 
 
         setLayout(new FlowLayout());
-        // "super" Frame (container) sets layout to FlowLayout, which arranges
-        // the components from left-to-right, and flow to next row from top-to-bottom.
+
 
         lblInput = new Label("Enter the ID of this artefact:"); // Construct Label
-        add(lblInput);               // "super" Frame container adds Label component
+        add(lblInput);
         Input1 = new TextField(20); // Construct TextField
         add(Input1);
         label1 = new Label("Enter the name of this artefact:"); // Construct Label
@@ -96,25 +94,19 @@ public class GUI extends JFrame implements ActionListener {
         enter.addActionListener(this);
         next.addActionListener(this);
         toggle.addActionListener(this);
-        // "tfInput" is the source object that fires an ActionEvent upon entered.
-        // The source add "this" instance as an ActionEvent listener, which provides
-        //  an ActionEvent handler called actionPerformed().
-        // Hitting "enter" on tfInput invokes actionPerformed().
 
-        // "super" Frame adds TextField
-
-        setTitle("Transaction creator");  // "super" Frame sets title
-        setSize(350, 120);  // "super" Frame sets initial window size
-        setVisible(true);   // "super" Frame shows
+        setTitle("Transaction creator");
+        setSize(350, 120);
+        setVisible(true);
     }
 
-    // ActionEvent handler - Called back upon hitting "enter" key on TextField
+
     @Override
     public void actionPerformed(ActionEvent evt) {
 
         boolean reset=false;
         if(evt.getSource() == enter) {
-            // Get the String entered into the TextField tfInput, convert to int
+
             Main main = new Main();
             StakeHolder owner = new StakeHolder(oId, oName, oAddress, oBalance);
             StakeHolder countryOfOrigin = new StakeHolder(cId, cName, cAddress, cBalance);
@@ -122,10 +114,10 @@ public class GUI extends JFrame implements ActionListener {
             StakeHolder auctionHouse = new StakeHolder(aId, aName, aAddress, aBalance);
             Artefact artefact = new Artefact(Input1.getText(), Input2.getText(), countryOfOrigin, owner);
             Transaction transaction = new Transaction(artefact, new Date().getTime(), owner, buyer, auctionHouse, Double.parseDouble(Input7.getText()));
+            System.out.println("User created block submitted");
             main.createBlock(transaction, 4, main.blockchain);
             main.writeTransactionToFile(main.blockchain);
-            System.out.println("User created block successfully mined");
-            setTitle("Successfully added to blockchain");
+            setTitle("Transaction successfully submitted");
             counter=0;
             label7.setText("Please enter the information for the owner of this artefact");
 
@@ -234,6 +226,5 @@ public class GUI extends JFrame implements ActionListener {
 
 
 
-        // convert int to String
     }
 }

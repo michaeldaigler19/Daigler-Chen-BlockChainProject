@@ -35,35 +35,30 @@ public class Main extends Frame implements ActionListener {
         //we want our hash to start with four zeroes
         String prefixString = new String(new char[prefix]).replace('\0', '0');
 
-        //data1-data3 should be filled by the user
+
 
         TestData data1 = new TestData();
         TestData data2 = new TestData();
         TestData data3 = new TestData();
+        System.out.println("Test block submitted");
         createBlock(data1.transaction1, prefix, blockchain);
-        System.out.println("Test block successfully mined");
+        System.out.println("Test block submitted");
         createBlock(data2.transaction2, prefix, blockchain);
-        System.out.println("Test block successfully mined");
+        System.out.println("Test block submitted");
         createBlock(data3.transaction3, prefix, blockchain);
-        System.out.println("Test block successfully mined");
 
 
-        //---------------------------------------------------------------
+
+        //--------GUI Section-------------------------------------------------------
 
         GUI cl = new GUI();
-
-        // Function to set size of JFrame.
         cl.setSize(500, 400);
-
-        // Function to set visibility of JFrame.
         cl.setVisible(true);
-
-        // Function to set default operation of JFrame.
         cl.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
 
 
-        //-----------------------------------------------------------------------
+        //-----Console Input (obsolete)---------------------------------------------------------
 
     //    Transaction transaction = new Transaction();
    //     boolean end = false;
@@ -81,7 +76,6 @@ public class Main extends Frame implements ActionListener {
 //        }
 
         //writeTransactionToFile(blockchain);
-//        BlockChainGUI g = new BlockChainGUI();
 
 
 
@@ -111,16 +105,20 @@ public class Main extends Frame implements ActionListener {
             Block genesisBlock = new Block(transaction, PREVIOUS_HASH_FOR_GENISIS_BLOCK, dateBefore2001.getTime());
 
             genesisBlock.mineBlock(prefix, blockchain);
-            if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain))
+            if (genesisBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain)){
                 blockchain.add(genesisBlock);
+                System.out.println("Block successfully added to blockchain");
+             }
             else
                 System.out.println("Malicious block, not added to the chain");
         }
         else {
             Block regularBlock = new Block(transaction, blockchain.get(blockchain.size() - 1).getHash(), dateBefore2001.getTime());
             regularBlock.mineBlock(prefix, blockchain);
-            if (regularBlock.getHash().substring(0, prefix).equals(prefixString) &&  verify_Blockchain(blockchain))
+            if (regularBlock.getHash().substring(0, prefix).equals(prefixString) && verify_Blockchain(blockchain)){
                 blockchain.add(regularBlock);
+                System.out.println("Block successfully added to blockchain");
+        }
             else
                 System.out.println("Malicious block, not added to the chain");
 
